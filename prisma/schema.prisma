@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleType {
+  admin
+  petugas
+  peminjam
+}
+
+// 1. Tabel Role (Master Data)
+model Role {
+  id_role   String   @id @default(cuid())
+  role      RoleType @default(peminjam)
+  
+  // Relasi ke User (Satu Role bisa punya banyak User)
+  users     User[]
+  
+  @@map("role")
+}
+
+// 2. Tabel User
+model User {
+  id_user    String         @id @default(cuid())
+  nama_user  String
+  email      String         @unique
+  password   String
+  id_role    String?        // Foreign Key ada di sini
+  
+  // Relasi ke Role
+  role       Role?          @relation(fields: [id_role], references: [id_role])
+  
+  // Relasi ke Kegiatan & Log
+  kegiatan   Kegiatan[]
+  logAktifitas LogAktifitas[]
+  
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+  
+  @@map("user")
+}
+
+// 3. Tabel Kategori
+model Kategori {
+  id_kategori   String   @id @default(cuid())
+  nama_kategori String
+  deskripsi     String?
+  alats         Alat[]
+  
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  
+  @@map("kategori")
+}
+
+// 4. Tabel Alat
+model Alat {
+  id_alat      String     @id @default(cuid())
+  nama_alat    String
+  id_kategori  String
+  stok         Int        @default(0)
+  
+  // Relasi
+  kategori     Kategori   @relation(fields: [id_kategori], references: [id_kategori])
+  kegiatan     Kegiatan[]
+  
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+  
+  @@map("alat")
+}
+
+// 5. Tabel Kegiatan
+model Kegiatan {
+  id_kegiatan    String         @id @default(cuid())
+  id_user        String
+  id_alat        String
+  jenis_kegiatan String
+  tgl_kegiatan   DateTime       @default(now())
+  peminjaman     DateTime?
+  pengembalian   DateTime?
+  pelanggaran    String?
+  denda          Float          @default(0)
+  
+  // Relasi
+  user           User           @relation(fields: [id_user], references: [id_user])
+  alat           Alat           @relation(fields: [id_alat], references: [id_alat])
+  logAktifitas   LogAktifitas[]
+  
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+  
+  @@map("kegiatan")
+}
+
+// 6. Tabel Log Aktifitas
+model LogAktifitas {
+  id_aktifitas String     @id @default(cuid())
+  id_kegiatan  String
+  id_user      String
+  
+  // Relasi
+  kegiatan     Kegiatan   @relation(fields: [id_kegiatan], references: [id_kegiatan])
+  user         User       @relation(fields: [id_user], references: [id_user])
+  
+  created_at   DateTime   @default(now())
+  
+  @@map("log_aktifitas")
+}
