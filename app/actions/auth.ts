@@ -12,6 +12,13 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Password wajib diisi'),
 })
 
+// Mapping role ke path dashboard
+const ROLE_DASHBOARD_MAP: Record<string, string> = {
+  admin: '/admin/dashboard',
+  petugas: '/petugas/dashboard',
+  peminjam: '/peminjam/dashboard',
+}
+
 export async function login(formData: FormData) {
   try {
     const email = formData.get('email') as string
@@ -23,7 +30,7 @@ export async function login(formData: FormData) {
       return { error: validation.error.issues[0].message }
     }
 
-    // Find user
+    // Find user with role
     const user = await prisma.user.findUnique({
       where: { email: email.toLowerCase() },
       include: {
@@ -42,19 +49,25 @@ export async function login(formData: FormData) {
       return { error: 'Email atau password salah' }
     }
 
+    // Get role name (handle jika role null)
+    const roleName = user.role?.role?.toLowerCase() || 'peminjam' // default fallback
+
     // Create token
     const token = await signToken({
       userId: user.id_user,
       email: user.email,
-      role: user.role?.role,
+      role: roleName,
     })
 
     // Set session
     await setSession(token)
 
-    // Revalidate and redirect
+    // Revalidate
     revalidatePath('/')
-    redirect('/dashboard')
+
+    // Redirect berdasarkan role
+    const redirectPath = ROLE_DASHBOARD_MAP[roleName] || '/dashboard'
+    redirect(redirectPath)
     
   } catch (error) {
     console.error('Login error:', error)

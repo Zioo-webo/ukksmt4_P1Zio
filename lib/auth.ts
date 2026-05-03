@@ -66,9 +66,7 @@ export async function getCurrentUser() {
   
   try {
     const user = await prisma.user.findUnique({
-      where: { 
-        id_user: payload.userId,
-      },
+      where: { id_user: payload.userId },
       select: {
         id_user: true,
         nama_user: true,
@@ -83,7 +81,12 @@ export async function getCurrentUser() {
       },
     })
     
-    return user
+    // ✅ Tambahkan flat role untuk kemudahan akses
+    return user ? {
+      ...user,
+      roleName: user.role?.role, // → user.roleName langsung bisa dipakai
+    } : null
+    
   } catch (error) {
     console.error('Get user error:', error)
     return null
