@@ -1,17 +1,40 @@
-"use server";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 
 type Context = {
-  params: {
-    id_user: string;
-  };
+  params: Promise<{ id: string }>;
 };
 
-export async function POST(_: Request, { params }: Context) {
-  await prisma.user.delete({
-    where: { id_user: params.id_user },
-  });
+export async function DELETE(req: Request, { params }: Context) {
+  try {
+    const { id } = await params;
 
-  redirect("/admin/management-user");
+    // Gunakan Transaction untuk memastikan semua terhapus atau tidak sama sekali
+    await prisma.$transaction(async (tx) => {
+      
+      // 1️⃣ Hapus LogAktifitas dulu (yang paling child/terbawah)
+      await tx.logAktifitas.deleteMany({
+        where: { id_user: id },
+      });
+
+      // 2️⃣ Hapus Kegiatan (setelah lognya hilang, ini aman)
+      await tx.kegiatan.deleteMany({
+        where: { id_user: id },
+      });
+
+      // 3️⃣ Baru hapus User-nya
+      await tx.user.delete({
+        where: { id_user: id },
+      });
+    });
+
+    return NextResponse.redirect(new URL("/admin/management-user", req.url));
+
+  } catch (error) {
+    console.error("Force delete error:", error);
+    return NextResponse.json(
+      { error: "Gagal menghapus user secara permanen" },
+      { status: 500 }
+    );
+  }
 }

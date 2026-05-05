@@ -58,20 +58,20 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="overflow-x-auto ms-25 me-25 w-full mt-10">
-      <h1 className="">Management User</h1>
+      <h1 className="">Management Kategori</h1>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter Kategori..."
+          value={(table.getColumn("nama_kategori")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("nama_kategori")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
       </div>
       <div className="mb-5">
-        <Link href="/admin/management-user/create" className="w-50 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-          Create User
+        <Link href="/admin/management-kategori/create" className="w-50 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+          Create Kategori
         </Link>
       </div>
       <div className="overflow-hidden rounded-md border">

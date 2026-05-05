@@ -1,24 +1,19 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/landing/sidebar-admin"
-import { columns, dataUser } from "./columns"
+import { columns, dataKategori } from "./columns"
 import { DataTable } from "./data-table"
 import { prisma } from "@/lib/prisma";
 
-async function getData(): Promise<dataUser[]> {
-    const users = await prisma.user.findMany({
-        include: {
-            role: true,
-        },
-    })
-    return users.map((user): dataUser => ({
-      id_user: user.id_user,
-      nama_user: user.nama_user,
-      email: user.email,
-      role: user.role?.role ?? "admin",
-    })) as dataUser[]
+async function getData(): Promise<dataKategori[]> {
+    const kategori = await prisma.kategori.findMany()
+    return kategori.map((kategori): dataKategori => ({
+      id_kategori: kategori.id_kategori,
+      nama_kategori: kategori.nama_kategori,
+      deskripsi: kategori.deskripsi,
+    })) as dataKategori[]
   }
 
-export default async function ManageUserPage() {
+export default async function ManageKategoriPage() {
     const data = await getData()
     return (
       <SidebarProvider>   

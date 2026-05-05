@@ -31,7 +31,8 @@ model User {
   email      String         @unique
   password   String
   id_role    String?        // Foreign Key ada di sini
-  
+  deleted_at DateTime?
+
   // Relasi ke Role
   role       Role?          @relation(fields: [id_role], references: [id_role])
   
@@ -88,7 +89,7 @@ model Kegiatan {
   denda          Float          @default(0)
   
   // Relasi
-  user           User           @relation(fields: [id_user], references: [id_user])
+  user           User     @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
   alat           Alat           @relation(fields: [id_alat], references: [id_alat])
   logAktifitas   LogAktifitas[]
   
@@ -106,7 +107,7 @@ model LogAktifitas {
   
   // Relasi
   kegiatan     Kegiatan   @relation(fields: [id_kegiatan], references: [id_kegiatan])
-  user         User       @relation(fields: [id_user], references: [id_user])
+  user           User     @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
   
   created_at   DateTime   @default(now())
   

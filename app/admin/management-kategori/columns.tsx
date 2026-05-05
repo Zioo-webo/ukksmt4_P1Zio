@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import {  MoreHorizontal } from "lucide-react"
 import Link from "next/link"
-import { DeleteButtonUser } from "@/components/landing/delete-button"
+import { DeleteButtonKategori } from "@/components/landing/delete/delete-kategori"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,29 +17,24 @@ import {
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type dataUser = {
-  id_user: string
-  nama_user: string
-  email: string
-  role: string
+export type dataKategori = {
+  id_kategori:   String 
+  nama_kategori: String
+  deskripsi:     String
 }
 
-export const columns: ColumnDef<dataUser>[] = [
+export const columns: ColumnDef<dataKategori>[] = [
   {
-    accessorKey: "id_user",
-    header: "ID User",
+    accessorKey: "id_kategori",
+    header: "ID Kategori",
   },
   {
-    accessorKey: "nama_user",
-    header: "Nama User",
+    accessorKey: "nama_kategori",
+    header: "Nama Kategori",
   },
   {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
-    accessorKey: "role",
-    header: "Role",
+    accessorKey: "deskripsi",
+    header: "Deskripsi",
   },
   {
     id: "actions",
@@ -57,16 +52,16 @@ export const columns: ColumnDef<dataUser>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id_user)}
+              onClick={() => navigator.clipboard.writeText(payment.id_kategori)}
             >
-              Copy ID User
+              Copy ID Kategori
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/admin/management-user/${payment.id_user}/edit`}>Edit</Link>
+              <Link href={`/admin/management-kategori/${payment.id_kategori}/edit`}>Edit</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <DeleteButtonUser id={payment.id_user} />
+              <DeleteButtonKategori id={payment.id_kategori} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
