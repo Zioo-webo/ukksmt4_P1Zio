@@ -19,38 +19,26 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group"
 
-type Props = {
-  params: Promise<{ id: string }>; // ← Next.js 15+
-};
 
-export default async function EditKategori({ params }: Props) {
-  const { id } = await params; // ← Await params
-
-  const kategori = await prisma.kategori.findFirst({
-    where: { id_kategori: id },
-  });
-
-  if (!kategori) {
-    return <div className="">Kategori not found</div>;
-  }
+export default async function CreateKategori() {
 
 
   return (
     <Card className="w-full max-w-sm mx-auto mt-50 shadow-lg">
       <CardHeader>
-        <CardTitle>Edit Kategori</CardTitle>
+        <CardTitle>Create Kategori</CardTitle>
         <CardDescription>
-          Update Kategori
+          Create a new Kategori
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={`/admin/management-kategori/${kategori.id_kategori}/update`} method="POST">
+        <form action={`/admin/management-kategori/create/store`} method="POST">
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="nama_kategori">Nama Kategori</Label>
               <input
                 name="nama_kategori"
-                defaultValue={kategori.nama_kategori}
+                defaultValue=""
                 placeholder="Nama Kategori"
                 id="nama_kategori"
                 required
@@ -66,18 +54,17 @@ export default async function EditKategori({ params }: Props) {
                     placeholder="Masukan Deskripsi"
                     className="min-h-[100px]"
                     name="deskripsi"
-                    defaultValue={kategori.deskripsi}
                     required
                     />
                 </InputGroup>
             </div>
           </div>
-          <div className="flex-col gap-2 mt-5">
+          <div className="flex-col gap-2 mt-5 w-full">
             <Button type="submit" className="w-full">
-              Update
+              Create
             </Button>
             <a
-              href="/admin/management-kategori"
+              href="/admin/management-user"
               className="w-full bg-red-500 text-white px-20 rounded-md py-1 mt-2 inline-block text-sm 
                           hover:bg-red-600 transition font-medium text-center"
             >
@@ -89,5 +76,8 @@ export default async function EditKategori({ params }: Props) {
     </Card>
   );
 }
+
+
+
 
 

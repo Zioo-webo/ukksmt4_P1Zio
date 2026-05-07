@@ -23,53 +23,61 @@ type Props = {
   params: Promise<{ id: string }>; // ← Next.js 15+
 };
 
-export default async function EditKategori({ params }: Props) {
+export default async function EditAlat({ params }: Props) {
   const { id } = await params; // ← Await params
 
-  const kategori = await prisma.kategori.findFirst({
-    where: { id_kategori: id },
+  const alat = await prisma.alat.findFirst({
+    where: { id_alat: id }
   });
 
-  if (!kategori) {
-    return <div className="">Kategori not found</div>;
+  if (!alat) {
+    return <div className="">Alat not found</div>;
   }
 
-
+  const kategori = await prisma.kategori.findMany();
   return (
     <Card className="w-full max-w-sm mx-auto mt-50 shadow-lg">
       <CardHeader>
-        <CardTitle>Edit Kategori</CardTitle>
+        <CardTitle>Edit Alat</CardTitle>
         <CardDescription>
-          Update Kategori
+          Update Alat
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={`/admin/management-kategori/${kategori.id_kategori}/update`} method="POST">
+        <form action={`/admin/management-alat/${alat.id_alat}/update`} method="POST">
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
-              <Label htmlFor="nama_kategori">Nama Kategori</Label>
+              <Label htmlFor="nama_alat">Nama Alat</Label>
               <input
-                name="nama_kategori"
-                defaultValue={kategori.nama_kategori}
-                placeholder="Nama Kategori"
-                id="nama_kategori"
+                name="nama_alat"
+                defaultValue={alat.nama_alat}
+                placeholder="Nama Alat"
+                id="nama_alat"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="stok">Stok Alat</Label>
+              <input
+                name="stok"
+                defaultValue={alat.stok}
+                placeholder="Stok Alat"
+                id="stok"
+                type="number"
                 required
               />
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
-                <Label htmlFor="deskripsi">Deskripsi Kategori</Label>
+                <Label htmlFor="deskripsi">Kategori</Label>
               </div>
-                <InputGroup>       
-                    <InputGroupTextarea
-                    id="deskripsi"
-                    placeholder="Masukan Deskripsi"
-                    className="min-h-[100px]"
-                    name="deskripsi"
-                    defaultValue={kategori.deskripsi}
-                    required
-                    />
-                </InputGroup>
+                <select name="id_kategori" defaultValue={kategori.id_kategori ?? ""} required>
+                      {kategori.map((kat) => (
+                        <option key={kat.id_kategori} value={kat.id_kategori}>
+                          {kat.nama_kategori}
+                        </option>
+                      ))}
+                    </select>
             </div>
           </div>
           <div className="flex-col gap-2 mt-5">
@@ -77,7 +85,7 @@ export default async function EditKategori({ params }: Props) {
               Update
             </Button>
             <a
-              href="/admin/management-kategori"
+              href="/admin/management-alat"
               className="w-full bg-red-500 text-white px-20 rounded-md py-1 mt-2 inline-block text-sm 
                           hover:bg-red-600 transition font-medium text-center"
             >

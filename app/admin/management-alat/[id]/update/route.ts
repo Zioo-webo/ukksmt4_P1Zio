@@ -11,27 +11,21 @@ export async function POST(req: Request, { params }: Context) {
   const { id } = await params;
   
   const formData = await req.formData();
-  const nama_kategori = formData.get("nama_kategori") as string;
-  const deskripsi = formData.get("deskripsi") as string;
+  const nama_alat = formData.get("nama_alat") as string;
+  const stokString = formData.get("stok") as string;
+  const id_kategori = formData.get("id_kategori") as string;
 
-
-
+  const stok = Number(stokString);
   try {
-    // 3. Cek Kategori
-    const existingKategori = await prisma.Kategori.findFirst({ where: { nama_kategori } });
-    if (existingKategori) {
-      return NextResponse.json(
-        { error: "Kategori sudah terdaftar" },
-        { status: 409 }
-      );
-    }
 
-    // Update user
-    await prisma.kategori.update({
-      where: { id_kategori: id },
+
+    // Update alat
+    await prisma.alat.update({
+      where: { id_alat: id },
       data: {
-        nama_kategori,
-        deskripsi,
+        nama_alat,
+        stok:stok,
+        id_kategori,
       },
     });
     
@@ -44,5 +38,5 @@ export async function POST(req: Request, { params }: Context) {
   }
 
   // ✅ redirect DI LUAR try-catch
-  redirect("/admin/management-kategori");
+  redirect("/admin/management-alat");
 }

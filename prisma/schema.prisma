@@ -65,6 +65,7 @@ model Alat {
   nama_alat    String
   id_kategori  String
   stok         Int        @default(0)
+  gambar       String?    // ← Field baru untuk menyimpan path/filename gambar
   
   // Relasi
   kategori     Kategori   @relation(fields: [id_kategori], references: [id_kategori])

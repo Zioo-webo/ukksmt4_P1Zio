@@ -84,6 +84,13 @@ export default async function EditUser({ params }: Props) {
             <Button type="submit" className="w-full">
               Update
             </Button>
+            <a
+              href="/admin/management-user"
+              className="w-full bg-red-500 text-white px-20 rounded-md py-1 mt-2 inline-block text-sm 
+                          hover:bg-red-600 transition font-medium text-center"
+            >
+              Batal
+            </a>
           </div>
         </form>
       </CardContent>

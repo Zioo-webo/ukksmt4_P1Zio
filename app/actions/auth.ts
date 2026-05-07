@@ -1,3 +1,4 @@
+// app/actions/auth.ts
 'use server'
 
 import { prisma } from '@/lib/prisma'
@@ -6,16 +7,16 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
-// Validation schema
+// 📋 Validation schema
 const loginSchema = z.object({
-  email: z.string().email('Email tidak valid'),
+  email: z.string().email('Format email tidak valid'),
   password: z.string().min(1, 'Password wajib diisi'),
 })
 
-// Mapping role ke path dashboard
+// 🗺️ Role → Dashboard mapping
 const ROLE_DASHBOARD_MAP: Record<string, string> = {
   admin: '/admin/dashboard',
-  petugas: '/petugas/dashboard',
+  petugas: '/petugas/dashboard', 
   peminjam: '/peminjam/dashboard',
 }
 
@@ -24,49 +25,45 @@ export async function login(formData: FormData) {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
 
-    // Validate
+    // ✅ Validate input
     const validation = loginSchema.safeParse({ email, password })
     if (!validation.success) {
       return { error: validation.error.issues[0].message }
     }
 
-    // Find user with role
+    // 🔍 Cari user di database
     const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() },
-      include: {
-        role: true,
-      },
+      where: { email: email.toLowerCase(), deleted_at: null },
+      include: { role: true },
     })
 
-    if (!user) {
+    if (!user || !user.password) {
       return { error: 'Email atau password salah' }
     }
 
-    // Verify password
+    // 🔐 Verify password
     const isValid = await verifyPassword(password, user.password)
-    
     if (!isValid) {
       return { error: 'Email atau password salah' }
     }
 
-    // Get role name (handle jika role null)
-    const roleName = user.role?.role?.toLowerCase() || 'peminjam' // default fallback
+    // 🎭 Get role (dengan fallback)
+    const roleName = user.role?.role?.toLowerCase() || 'peminjam'
 
-    // Create token
+    // 🎫 Create & set JWT token
     const token = await signToken({
       userId: user.id_user,
       email: user.email,
       role: roleName,
     })
-
-    // Set session
+    
     await setSession(token)
 
-    // Revalidate
+    // ♻️ Revalidate cache
     revalidatePath('/')
 
-    // Redirect berdasarkan role
-    const redirectPath = ROLE_DASHBOARD_MAP[roleName] || '/dashboard'
+    // 🚀 Redirect ke dashboard sesuai role
+    const redirectPath = ROLE_DASHBOARD_MAP[roleName] || '/peminjam/dashboard'
     redirect(redirectPath)
     
   } catch (error) {

@@ -1,60 +1,107 @@
+// lib/auth.ts
 import { SignJWT, jwtVerify } from 'jose'
 import bcrypt from 'bcryptjs'
 import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 
-const SECRET_KEY = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-this-in-production'
+// 🔐 JWT Secret - WAJIB ada di production
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || 'fallback-dev-secret-change-this-immediately'
 )
 
-// Hash password
-export async function hashPassword(password: string) {
+// 🌐 Deteksi apakah menggunakan HTTPS
+function isSecure(): boolean {
+  if (process.env.NODE_ENV === 'production') {
+    // Production: cek env variable atau default ke true
+    return process.env.PROTOCOL === 'https' || 
+           process.env.NEXT_PUBLIC_BASE_URL?.startsWith('https') ||
+           true // Default secure di production
+  }
+  // Development: hanya secure jika eksplisit di-set
+  return process.env.PROTOCOL === 'https' || false
+}
+
+// 🔗 Deteksi domain untuk cookie (opsional)
+function getCookieDomain(): string | undefined {
+  const domain = process.env.COOKIE_DOMAIN
+  if (domain) return domain
+  
+  // Auto-detect untuk custom domain production
+  if (process.env.NODE_ENV === 'production') {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+    if (baseUrl && !baseUrl.includes('localhost') && !baseUrl.match(/\d+\.\d+\.\d+\.\d+/)) {
+      try {
+        const hostname = new URL(baseUrl).hostname
+        // .domain.com agar work di subdomain juga
+        return '.' + hostname.split('.').slice(-2).join('.')
+      } catch {
+        return undefined
+      }
+    }
+  }
+  return undefined
+}
+
+// 🔐 Hash password
+export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 12)
 }
 
-// Verify password
-export async function verifyPassword(password: string, hashedPassword: string) {
+// 🔍 Verify password
+export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
   return bcrypt.compare(password, hashedPassword)
 }
 
-// Create JWT token
-export async function signToken(payload: { userId: string; email: string; role?: string }) {
+// 🎫 Create JWT token
+export async function signToken(payload: { 
+  userId: string; 
+  email: string; 
+  role?: string 
+}): Promise<string> {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('24h')
-    .sign(SECRET_KEY)
+    .sign(JWT_SECRET)
 }
 
-// Verify JWT token
+// ✅ Verify JWT token
 export async function verifyToken(token: string) {
   try {
-    const { payload } = await jwtVerify(token, SECRET_KEY)
-    return payload as { userId: string; email: string; role?: string }
-  } catch (error) {
+    const { payload } = await jwtVerify(token, JWT_SECRET)
+    return payload as { 
+      userId: string; 
+      email: string; 
+      role?: string 
+    }
+  } catch {
     return null
   }
 }
 
-// Set session cookie
-export async function setSession(token: string) {
+// 🍪 Set session cookie - WORKS di localhost, network, & domain
+export async function setSession(token: string): Promise<void> {
   const cookieStore = await cookies()
+  const secure = isSecure()
+  const domain = getCookieDomain()
+  
   cookieStore.set('session', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 86400, // 24 hours
-    path: '/',
+    httpOnly: true,           // ✅ Tidak bisa diakses via JavaScript
+    secure: secure,           // ✅ Hanya kirim via HTTPS jika secure=true
+    sameSite: secure ? 'strict' : 'lax', // ✅ lax untuk cross-origin HTTP
+    maxAge: 24 * 60 * 60,     // ✅ 24 jam
+    path: '/',                // ✅ Tersedia di seluruh path
+    domain: domain,           // ✅ Opsional: untuk custom domain
   })
 }
 
-// Clear session cookie
-export async function clearSession() {
+// 🗑️ Clear session cookie
+export async function clearSession(): Promise<void> {
   const cookieStore = await cookies()
   cookieStore.delete('session')
 }
 
-// Get current user from session
+// 👤 Get current user dari session
 export async function getCurrentUser() {
   const cookieStore = await cookies()
   const token = cookieStore.get('session')?.value
@@ -62,46 +109,43 @@ export async function getCurrentUser() {
   if (!token) return null
   
   const payload = await verifyToken(token)
-  if (!payload) return null
+  if (!payload?.userId) return null
   
   try {
     const user = await prisma.user.findUnique({
-      where: { id_user: payload.userId },
-      select: {
-        id_user: true,
-        nama_user: true,
-        email: true,
-        id_role: true,
-        role: {
-          select: {
-            id_role: true,
-            role: true,
-          }
-        },
+      where: { id_user: payload.userId, deleted_at: null },
+      include: { 
+        role: { select: { id_role: true, role: true }} 
       },
     })
     
-    // ✅ Tambahkan flat role untuk kemudahan akses
-    return user ? {
-      ...user,
-      roleName: user.role?.role, // → user.roleName langsung bisa dipakai
-    } : null
+    if (!user) return null
     
+    return {
+      id_user: user.id_user,
+      nama_user: user.nama_user,
+      email: user.email,
+      id_role: user.id_role,
+      role: user.role,
+      roleName: user.role?.role,
+    }
   } catch (error) {
-    console.error('Get user error:', error)
+    console.error('getCurrentUser error:', error)
     return null
   }
 }
 
-// Check if user is admin
-export async function isAdmin() {
+// 🔐 Check role helpers
+export async function isAdmin(): Promise<boolean> {
   const user = await getCurrentUser()
-  return user?.role?.role === 'admin'
+  return user?.roleName === 'admin'
 }
 
-// Check if user is petugas
-export async function isPetugas() {
+export async function isPetugas(): Promise<boolean> {
   const user = await getCurrentUser()
-  const userRole = user?.role?.role
-  return userRole === 'petugas' || userRole === 'admin'
+  return user?.roleName === 'admin' || user?.roleName === 'petugas'
+}
+
+export async function isAuthenticated(): Promise<boolean> {
+  return !!(await getCurrentUser())
 }
