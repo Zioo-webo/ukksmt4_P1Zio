@@ -66,7 +66,7 @@ export default async function EditKategori({ params }: Props) {
                     placeholder="Masukan Deskripsi"
                     className="min-h-[100px]"
                     name="deskripsi"
-                    defaultValue={kategori.deskripsi}
+                    defaultValue={kategori.deskripsi ?? ""}
                     required
                     />
                 </InputGroup>

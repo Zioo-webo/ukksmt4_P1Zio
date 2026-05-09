@@ -86,12 +86,11 @@ export async function setSession(token: string): Promise<void> {
   const domain = getCookieDomain()
   
   cookieStore.set('session', token, {
-    httpOnly: true,           // ✅ Tidak bisa diakses via JavaScript
-    secure: secure,           // ✅ Hanya kirim via HTTPS jika secure=true
-    sameSite: secure ? 'strict' : 'lax', // ✅ lax untuk cross-origin HTTP
-    maxAge: 24 * 60 * 60,     // ✅ 24 jam
-    path: '/',                // ✅ Tersedia di seluruh path
-    domain: domain,           // ✅ Opsional: untuk custom domain
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 24 * 60 * 60,
+    path: '/',
   })
 }
 

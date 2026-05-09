@@ -18,9 +18,9 @@ import {
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type dataKategori = {
-  id_kategori:   String 
-  nama_kategori: String
-  deskripsi:     String
+  id_kategori:  string 
+  nama_kategori: string
+  deskripsi:     string
 }
 
 export const columns: ColumnDef<dataKategori>[] = [

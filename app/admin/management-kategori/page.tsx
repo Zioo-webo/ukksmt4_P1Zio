@@ -9,7 +9,7 @@ async function getData(): Promise<dataKategori[]> {
     return kategori.map((kategori): dataKategori => ({
       id_kategori: kategori.id_kategori,
       nama_kategori: kategori.nama_kategori,
-      deskripsi: kategori.deskripsi,
+      deskripsi: kategori.deskripsi ?? "",
     })) as dataKategori[]
   }
 

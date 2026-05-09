@@ -18,9 +18,9 @@ import {
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type dataAlat = {
-  id_alat:   String 
-  nama_alat: String
-  nama_kategori:     String
+  id_alat:   string 
+  nama_alat: string
+  nama_kategori:     string
   stok: number
 }
 

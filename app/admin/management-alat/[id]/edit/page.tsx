@@ -71,13 +71,17 @@ export default async function EditAlat({ params }: Props) {
               <div className="flex items-center">
                 <Label htmlFor="deskripsi">Kategori</Label>
               </div>
-                <select name="id_kategori" defaultValue={kategori.id_kategori ?? ""} required>
-                      {kategori.map((kat) => (
-                        <option key={kat.id_kategori} value={kat.id_kategori}>
-                          {kat.nama_kategori}
-                        </option>
-                      ))}
-                    </select>
+              <select
+                name="id_kategori"
+                defaultValue={alat.id_kategori ?? ""}
+                required
+              >
+                {kategori.map((kat) => (
+                  <option key={kat.id_kategori} value={kat.id_kategori}>
+                    {kat.nama_kategori}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="flex-col gap-2 mt-5">

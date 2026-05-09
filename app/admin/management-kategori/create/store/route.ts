@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
 
     // 3. Cek Kategori
-    const existingKategori = await prisma.Kategori.findFirst({ where: { nama_kategori } });
+    const existingKategori = await prisma.kategori.findFirst({ where: { nama_kategori } });
     if (existingKategori) {
       return NextResponse.json(
         { error: "Kategori sudah terdaftar" },
