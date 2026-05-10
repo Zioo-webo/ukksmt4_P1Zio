@@ -23,6 +23,10 @@ export type dataUser = {
   email: string
   role: string
 }
+export type dataRole = {
+  id_role: string
+  role: string
+}
 
 export const columns: ColumnDef<dataUser>[] = [
   {

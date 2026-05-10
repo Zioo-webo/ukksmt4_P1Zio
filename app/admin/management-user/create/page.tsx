@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { dataRole } from "../columns";
 
 
 export default async function CreateUser() {
@@ -67,7 +68,7 @@ export default async function CreateUser() {
                 <label htmlFor="id_role">Role</label>
               </div>
                     <select name="id_role" required>
-                    {roles.map((role) => (
+                    {roles.map((role : dataRole) => (
                     <option key={role.id_role} value={role.role}>
                         {role.role === "admin" 
                         ? "Administrator Sistem" 

@@ -18,6 +18,7 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@/components/ui/input-group"
+import { dataKategori } from "@/app/admin/management-kategori/columns";
 
 type Props = {
   params: Promise<{ id: string }>; // ← Next.js 15+
@@ -76,7 +77,7 @@ export default async function EditAlat({ params }: Props) {
                 defaultValue={alat.id_kategori ?? ""}
                 required
               >
-                {kategori.map((kat) => (
+                {kategori.map((kat : dataKategori)  => (
                   <option key={kat.id_kategori} value={kat.id_kategori}>
                     {kat.nama_kategori}
                   </option>

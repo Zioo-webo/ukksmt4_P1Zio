@@ -22,7 +22,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { PanelLeftIcon } from "lucide-react"
+import { TextAlignJustify } from "lucide-react"
 import LogoutButton from "@/app/logout/page"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
@@ -271,7 +271,7 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <PanelLeftIcon />
+      <TextAlignJustify size="100" />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
