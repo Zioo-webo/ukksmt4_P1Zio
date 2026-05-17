@@ -36,7 +36,7 @@ export default async function EditKategori({ params }: Props) {
 
 
   return (
-    <Card className="w-full max-w-sm mx-auto mt-50 shadow-lg">
+    <Card className="w-full max-w-sm mx-auto mt-30 shadow-lg">
       <CardHeader>
         <CardTitle>Edit Kategori</CardTitle>
         <CardDescription>

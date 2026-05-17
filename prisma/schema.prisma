@@ -86,6 +86,7 @@ model Kegiatan {
   tgl_kegiatan   DateTime       @default(now())
   peminjaman     DateTime?
   pengembalian   DateTime?
+  status         String
   pelanggaran    String?
   denda          Float          @default(0)
   

@@ -33,7 +33,7 @@ export default async function EditUser({ params }: Props) {
   const roles = await prisma.role.findMany();
 
   return (
-    <Card className="w-full max-w-sm mx-auto mt-50 shadow-lg">
+    <Card className="w-full max-w-sm mx-auto mt-30 shadow-lg">
       <CardHeader>
         <CardTitle>Edit User</CardTitle>
         <CardDescription>
@@ -44,7 +44,7 @@ export default async function EditUser({ params }: Props) {
         <form action={`/admin/management-user/${user.id_user}/update`} method="POST">
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="nama_user">Username</Label>
               <input
                 name="nama_user"
                 defaultValue={user.nama_user ?? ""}
@@ -54,7 +54,7 @@ export default async function EditUser({ params }: Props) {
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="email">Email</Label>
               </div>
                     <input
                       name="email"

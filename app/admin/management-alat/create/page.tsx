@@ -18,40 +18,28 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@/components/ui/input-group"
-import { dataKategori } from "@/app/admin/management-kategori/columns";
 
-type Props = {
-  params: Promise<{ id: string }>; // ← Next.js 15+
-};
 
-export default async function EditAlat({ params }: Props) {
-  const { id } = await params; // ← Await params
+export default async function CreateKategori() {
 
-  const alat = await prisma.alat.findFirst({
-    where: { id_alat: id }
+    const kategori = await prisma.kategori.findMany({
+    orderBy: { nama_kategori: "asc" },
   });
-
-  if (!alat) {
-    return <div className="">Alat not found</div>;
-  }
-
-  const kategori = await prisma.kategori.findMany();
   return (
     <Card className="w-full max-w-sm mx-auto mt-30 shadow-lg">
       <CardHeader>
-        <CardTitle>Edit Alat</CardTitle>
+        <CardTitle>Create Alat</CardTitle>
         <CardDescription>
-          Update Alat
+          Create a new Alat
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={`/admin/management-alat/${alat.id_alat}/update`} method="POST">
+        <form action={`/admin/management-alat/create/store`} method="POST">
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="nama_alat">Nama Alat</Label>
               <input
                 name="nama_alat"
-                defaultValue={alat.nama_alat}
                 placeholder="Nama Alat"
                 id="nama_alat"
                 required
@@ -61,7 +49,6 @@ export default async function EditAlat({ params }: Props) {
               <Label htmlFor="stok">Stok Alat</Label>
               <input
                 name="stok"
-                defaultValue={alat.stok}
                 placeholder="Stok Alat"
                 id="stok"
                 type="number"
@@ -74,7 +61,6 @@ export default async function EditAlat({ params }: Props) {
               </div>
               <select
                 name="id_kategori"
-                defaultValue={alat.id_kategori ?? ""}
                 required
               >
                 {kategori.map((kat)  => (
@@ -85,12 +71,12 @@ export default async function EditAlat({ params }: Props) {
               </select>
             </div>
           </div>
-          <div className="flex-col gap-2 mt-5">
+          <div className="flex-col gap-2 mt-5 w-full">
             <Button type="submit" className="w-full">
-              Update
+              Create
             </Button>
             <a
-              href="/admin/management-alat"
+              href="/admin/management-user"
               className="w-full bg-red-500 text-white px-20 rounded-md py-1 mt-2 inline-block text-sm 
                           hover:bg-red-600 transition font-medium text-center"
             >
@@ -102,5 +88,8 @@ export default async function EditAlat({ params }: Props) {
     </Card>
   );
 }
+
+
+
 
 
