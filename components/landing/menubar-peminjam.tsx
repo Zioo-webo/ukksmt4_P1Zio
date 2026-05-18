@@ -15,6 +15,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar"
 import LogoutButton from "@/app/logout/page"
+import Link from "next/link"
 export function MenubarPeminjam() {
   return (
     <Menubar className="w-full h-20">
@@ -83,14 +84,9 @@ export function MenubarPeminjam() {
       <MenubarMenu>
         <MenubarTrigger>Profiles</MenubarTrigger>
         <MenubarContent>
-          <MenubarRadioGroup value="benoit">
-            <MenubarRadioItem value="andy">Andy</MenubarRadioItem>
-            <MenubarRadioItem value="benoit">Benoit</MenubarRadioItem>
-            <MenubarRadioItem value="Luis">Luis</MenubarRadioItem>
-          </MenubarRadioGroup>
-          <MenubarSeparator />
           <MenubarGroup>
-            <MenubarItem inset>Edit...</MenubarItem>
+            <MenubarItem inset><Link href="/peminjam/history/peminjaman">Riwayat Peminjaman</Link></MenubarItem>
+            <MenubarItem inset><Link href="/peminjam/history/pengembalian">Riwayat Pengembalian</Link></MenubarItem>
           </MenubarGroup>
           <MenubarSeparator />
           <LogoutButton/>

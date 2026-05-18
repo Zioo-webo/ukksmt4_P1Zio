@@ -1,17 +1,106 @@
-// components/LogoutButton.tsx
-'use client'
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/landing/sidebar-petugas"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {UserRound, Archive} from "lucide-react"
+import { prisma } from "@/lib/prisma";
 
-import { logout } from '@/app/actions/auth' // sesuaikan path import
-
-export default function LogoutButton() {
+export default function DashboardAdminPage() {
+  const user =  prisma.user.count();
+  const kategori =  prisma.kategori.count();
+  const alat =  prisma.alat.count();
   return (
-    <form action={logout}>
-      <button 
-        type="submit"
-        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-      >
-        Logout
-      </button>
-    </form>
+    <SidebarProvider>   
+        <AppSidebar />
+      <main>
+        <SidebarTrigger />
+        <div className="container bg-purple-500 py-5 shadow-2xl w-full">
+          <h1 className="text-white text-[30px] font-bold ms-5 mt-5">Dashboard Petugas</h1>
+          <div className="grid grid-cols-4 md:grid-cols-4 gap-10 ms-5 mt-10 h-50 me-5">
+            <Card size="sm" className="mx-auto w-60 max-w-sm border-0  hover:shadow-2xl transition duration-500">
+              <CardHeader className="">
+                <CardTitle className="grid grid-cols-2 md:grid-cols-12">
+                  <h1 className="mt-3 text-2xl font-bold col-span-10">Users</h1>
+                  <UserRound size="40" className=" mt-3 font-bold text-purple-500 rounded border-black bg-purple-200 p-1 " />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="h-10">
+                <p className=" text-[50px] font-bold ms-5">
+                  {user}
+                </p>
+              </CardContent>
+              <CardFooter className="self-end">
+                <Button size="lg" className="w-30 h-10 mx-auto bg-purple-500 hover:bg-purple-400 transition duration-500 ">
+                  Action
+                </Button>
+              </CardFooter>
+            </Card>
+            <Card size="sm" className="mx-auto w-60 max-w-sm border-0  hover:shadow-2xl transition duration-500">
+              <CardHeader className="">
+                <CardTitle className="grid grid-cols-2 md:grid-cols-12">
+                  <h1 className="mt-3 text-2xl font-bold col-span-10">Categories</h1>
+                  <Archive  size="40" className=" mt-3 font-bold text-purple-500 rounded border-black bg-purple-200 p-1 " />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="h-10">
+                <p className=" text-[50px] font-bold ms-5">
+                  {kategori}
+                </p>
+              </CardContent>
+              <CardFooter className="self-end">
+                <Button size="lg" className="w-30 h-10 mx-auto bg-purple-500 hover:bg-purple-400 transition duration-500 ">
+                  Action
+                </Button>
+              </CardFooter>
+            </Card>
+            <Card size="sm" className="mx-auto w-60 max-w-sm border-0  hover:shadow-2xl transition duration-500">
+              <CardHeader className="">
+                <CardTitle className="grid grid-cols-2 md:grid-cols-12">
+                  <h1 className="mt-3 text-2xl font-bold col-span-10">Stuff</h1>
+                  <UserRound size="40" className=" mt-3 font-bold text-purple-500 rounded border-black bg-purple-200 p-1 " />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="h-10">
+                <p className=" text-[50px] font-bold ms-5">
+                  {alat}
+                </p>
+              </CardContent>
+              <CardFooter className="self-end">
+                <Button size="lg" className="w-30 h-10 mx-auto bg-purple-500 hover:bg-purple-400 transition duration-500 ">
+                  Action
+                </Button>
+              </CardFooter>
+            </Card>
+            <Card size="sm" className="mx-auto w-60 max-w-sm border-0  hover:shadow-2xl transition duration-500">
+              <CardHeader className="">
+                <CardTitle className="grid grid-cols-2 md:grid-cols-12">
+                  <h1 className="mt-3 text-2xl font-bold col-span-10">User </h1>
+                  <UserRound size="40" className=" mt-3 font-bold text-purple-500 rounded border-black bg-purple-200 p-1 " />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="h-10">
+                <p className=" text-[50px] font-bold ms-5">
+                  {user}
+                </p>
+              </CardContent>
+              <CardFooter className="self-end">
+                <Button size="lg" className="w-30 h-10 mx-auto bg-purple-500 hover:bg-purple-400 transition duration-500 ">
+                  Action
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
+      </main>
+    </SidebarProvider>
   )
 }
+
+

@@ -77,8 +77,12 @@ export default async function Pinjam({ params }: Props) {
           
           {/* Info stok */}
           <p className="text-sm text-muted-foreground mt-3">
+            Item: <strong>{alat.nama_alat}</strong>
+          </p>
+          <p className="text-sm text-muted-foreground mt-3">
             Stok tersedia: <strong>{alat.stok}</strong> unit
           </p>
+          
 
           <div className="flex-col gap-2 mt-5 w-full">
             <Button type="submit" className="w-full">

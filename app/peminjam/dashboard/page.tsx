@@ -75,7 +75,11 @@ export default async function DashboardPeminjam() {
             </CardDescription>
           </CardHeader>
           <CardFooter>
-            <Link className="w-80 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2" href={`/peminjam/${alats.id_alat}/pinjam`}>Ajukan Peminjaman</Link>
+            {alats.stok > 0 ? (
+                    <Link className="w-80 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2" href={`/peminjam/${alats.id_alat}/pinjam`}>Ajukan Peminjaman</Link>
+                  ) : (
+                    <Link className="w-80 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2" href="">Ajukan Peminjaman</Link>
+                  )}
           </CardFooter>
         </Card>
         ))}
